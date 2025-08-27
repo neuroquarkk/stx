@@ -13,16 +13,18 @@ const (
 )
 
 type Formatter struct {
-	showLines bool
-	showWords bool
-	showChars bool
+	showLines       bool
+	showWords       bool
+	showChars       bool
+	showUniqueWords bool
 }
 
-func New(lines, words, chars bool) *Formatter {
+func New(lines, words, chars, uniqueWords bool) *Formatter {
 	return &Formatter{
 		showLines: lines,
 		showWords: words,
 		showChars: chars,
+		showUniqueWords: uniqueWords,
 	}
 }
 
@@ -37,6 +39,9 @@ func (f *Formatter) Print(results []analyzer.FileStats, total analyzer.FileStats
 	}
 	if f.showChars {
 		fmt.Printf("%*s", columnWidth, "Chars")
+	}
+	if f.showUniqueWords {
+		fmt.Printf("%*s", columnWidth, "Unique")
 	}
 	fmt.Println()
 
@@ -58,6 +63,9 @@ func (f *Formatter) Print(results []analyzer.FileStats, total analyzer.FileStats
 		if f.showChars {
 			fmt.Printf("%*d", columnWidth, result.Chars)
 		}
+		if f.showUniqueWords {
+			fmt.Printf("%*d", columnWidth, result.UniqueWords)
+		}
 		fmt.Println()
 	}
 
@@ -74,6 +82,9 @@ func (f *Formatter) Print(results []analyzer.FileStats, total analyzer.FileStats
 		if f.showChars {
 			fmt.Printf("%*d", columnWidth, total.Chars)
 		}
+		if f.showUniqueWords {
+			fmt.Printf("%*d", columnWidth, total.UniqueWords)
+		}
 		fmt.Println()
 	}
 }
@@ -88,6 +99,9 @@ func (f *Formatter) printSeparator() {
 		fmt.Print(strings.Repeat("-", columnWidth))
 	}
 	if f.showChars {
+		fmt.Print(strings.Repeat("-", columnWidth))
+	}
+	if f.showUniqueWords {
 		fmt.Print(strings.Repeat("-", columnWidth))
 	}
 	fmt.Println()

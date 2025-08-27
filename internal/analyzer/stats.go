@@ -7,10 +7,11 @@ import (
 )
 
 type FileStats struct {
-	Filename string
-	Lines    int
-	Words    int
-	Chars    int
+	Filename    string
+	Lines       int
+	Words       int
+	Chars       int
+	UniqueWords int
 }
 
 func AnalyzeFile(filename string) (*FileStats, error) {
@@ -36,6 +37,7 @@ func AnalyzeFile(filename string) (*FileStats, error) {
 	}
 
 	stats.Words = countWords(contentStr)
+	stats.UniqueWords = countUniqueWords(contentStr)
 
 	return &stats, nil
 }
@@ -64,4 +66,32 @@ func countWords(txt string) int {
 	}
 
 	return wordCount
+}
+
+func countUniqueWords(txt string) int {
+	if len(strings.TrimSpace(txt)) == 0 {
+		return 0
+	}
+
+	uniqueWords := make(map[string]struct{})
+	var currentWord strings.Builder
+
+	for _, char := range txt {
+		if unicode.IsSpace(char) || unicode.IsPunct(char) {
+			if currentWord.Len() > 0 {
+				word := strings.ToLower(currentWord.String())
+				uniqueWords[word] = struct{}{}
+				currentWord.Reset()
+			}
+		} else if unicode.IsLetter(char) || unicode.IsDigit(char) {
+			currentWord.WriteRune(char)
+		}
+	}
+
+	if currentWord.Len() > 0 {
+		word := strings.ToLower(currentWord.String())
+		uniqueWords[word] = struct{}{}
+	}
+
+	return len(uniqueWords)
 }

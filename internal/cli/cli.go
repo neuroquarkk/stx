@@ -9,11 +9,12 @@ import (
 )
 
 type App struct {
-	countLines bool
-	countWords bool
-	countChars bool
-	showHelp   bool
-	files      []string
+	countLines       bool
+	countWords       bool
+	countChars       bool
+	countUniqueWords bool
+	showHelp         bool
+	files            []string
 }
 
 func New() *App {
@@ -30,7 +31,7 @@ func (a *App) Run(args []string) error {
 		return nil
 	}
 
-	if !a.countLines && !a.countChars && !a.countWords {
+	if !a.countLines && !a.countChars && !a.countWords && !a.countUniqueWords {
 		a.countLines = true
 		a.countChars = true
 		a.countWords = true
@@ -49,9 +50,10 @@ func (a *App) Run(args []string) error {
 		totalStats.Lines += stats.Lines
 		totalStats.Words += stats.Words
 		totalStats.Chars += stats.Chars
+		totalStats.UniqueWords += stats.UniqueWords
 	}
 
-	formatter := output.New(a.countLines, a.countWords, a.countChars)
+	formatter := output.New(a.countLines, a.countWords, a.countChars, a.countUniqueWords)
 	formatter.Print(results, totalStats, len(a.files) > 1)
 
 	return nil
@@ -68,6 +70,8 @@ func (a *App) parseArgs(args []string) error {
 					a.countWords = true
 				case 'c':
 					a.countChars = true
+				case 'u':
+					a.countUniqueWords = true
 				case 'h':
 					a.showHelp = true
 				default:

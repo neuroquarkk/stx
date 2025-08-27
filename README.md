@@ -16,6 +16,7 @@ stx [FLAGS] [file...]
 | `-l` | Count lines only |
 | `-w` | Count words only |
 | `-c` | Count chars only |
+| `-u` | Count unique words only |
 | `-h` | Show help        |
 
 > Flags can be combined (`-lwc`)
